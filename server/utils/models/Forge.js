@@ -23,6 +23,10 @@ class Forge extends Model {
           type: DataTypes.STRING,
           allowNull: true,
         },
+        forgePicture: {
+          type: DataTypes.STRING,
+          defaultValue: null,
+        },
       },
       {
         sequelize,
@@ -34,6 +38,12 @@ class Forge extends Model {
         updatedAt: "updated_at",
       }
     );
+
+    Forge.beforeCreate((forge) => {
+      if (!forge.forgePicture) {
+        forge.forgePicture = `https://ui-avatars.com/api/?name=${encodeURIComponent(forge.name)}`;
+      }
+    });
 
     Forge.belongsToMany(User, {
       through: "ForgeMembers",
