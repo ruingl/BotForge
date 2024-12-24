@@ -4,7 +4,7 @@
  */
 
 import { DataTypes, Model } from "@sequelize/core";
-import bcrypt from "bcrypt";
+import bcrypt from "bcryptjs";
 
 class User extends Model {
   static initModel(sequelize) {
