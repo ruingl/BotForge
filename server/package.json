@@ -1,0 +1,10 @@
+{
+  "name": "server",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "dependencies": {
+    "@sequelize/core": "^7.0.0-alpha.43",
+    "@sequelize/postgres": "^7.0.0-alpha.43"
+  }
+}
