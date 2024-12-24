@@ -13,26 +13,26 @@ import User from "./models/User";
 import Forge from "./models/Forge";
 import ForgeMembers from "./models/ForgeMembers";
 
+let sequelizeInstance;
+
 async function connectDB() {
-  const sequelize = new Sequelize({
-    // u can change dialects if u
-    // dont use postgres
-    dialect: PostgresDialect,
-    database: process.env.DB_NAME,
-    user: process.env.DB_USER,
-    password: process.env.DB_PASS,
-    host: process.env.DB_HOST,
+  if (!sequelizeInstance) {
+    sequelizeInstance = new Sequelize({
+      dialect: PostgresDialect,
+      database: process.env.DB_NAME,
+      username: process.env.DB_USER,
+      password: process.env.DB_PASS,
+      host: process.env.DB_HOST,
+      ssl: true
+    });
 
-    // update if u dont have ssl
-    ssl: true
-  });
+    const user = User.initModel(sequelizeInstance);
+    const forge = Forge.initModel(sequelizeInstance);
+    const forgeMembers = ForgeMembers.initModel(sequelizeInstance);
 
-  const user = User.initModel(sequelize);
-  const forge = Forge.initModel(sequelize);
-  const forgeMembers = ForgeMembers.initModel(sequelize);
-
-  await sequelize.sync({ force: true });
-  return { sequelize, user, forge, forgeMembers };
+    await sequelizeInstance.sync({ force: false });
+  }
+  return sequelizeInstance;
 }
 
-export default { connectDB };
+export default connectDB;
