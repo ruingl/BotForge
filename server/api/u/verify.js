@@ -1,5 +1,13 @@
-import jwt from "jsonwebtoken";
+/*!
+ * Copyright (c) 2024 Rui Reogo
+ * https://botforge-api.ruii.site/
+ */
 
+import * as utils from "../../utils/utils";
+utils.loadEnv();
+utils.checkEnv();
+
+import jwt from "jsonwebtoken";
 const SECRET_KEY = process.env.JWT_KEY;
 
 export default async function handler(req, res) {

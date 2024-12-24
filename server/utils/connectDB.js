@@ -3,46 +3,31 @@
  * https://botforge-api.ruii.site/
  */
 
-import dotenv from "dotenv";
-dotenv.config();
+import * as utils from "./utils";
+utils.loadEnv();
+utils.checkEnv();
 
 import { Sequelize } from "@sequelize/core";
 import { PostgresDialect } from "@sequelize/postgres";
-import userModel from "./models/userModel";
+import User from "./models/User";
 
-/**
- * how 2 uze:
- * const _db = new Database();
- * const db = _db.init();
- */
-class Database {
-  constructor() {
-    this.sequelize = new Sequelize({
-      // u can change dialects if u
-      // dont use postgres
-      dialect: PostgresDialect,
-      database: process.env.DB_NAME,
-      user: process.env.DB_USER,
-      password: process.env.DB_PASS,
-      host: process.env.DB_HOST,
-      
-      // update if u dont have ssl
-      ssl: true
-    });
-    
-    this.userModel = userModel.initModel(
-      this.sequelize
-    );
-  }
+async function connectDB() {
+  const sequelize = new Sequelize({
+    // u can change dialects if u
+    // dont use postgres
+    dialect: PostgresDialect,
+    database: process.env.DB_NAME,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASS,
+    host: process.env.DB_HOST,
+
+    // update if u dont have ssl
+    ssl: true
+  });
+  const user = User.initModel(sequelize);
   
-  async init() {
-    // TODO: update into false if prod
-    await this.sequelize.sync({ force: true });
-    return { 
-      userModel: this.userModel,
-      sequelize: this.sequelize 
-    };
-  }
+  await sequelize.sync({ force: true });
+  return { sequelize, user };
 }
 
-export default Database;
+export default { connectDB };

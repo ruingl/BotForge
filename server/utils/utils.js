@@ -4,33 +4,30 @@
  */
 
 import dotenv from "dotenv";
-dotenv.config();
 
-import { Sequelize } from "@sequelize/core";
-import { PostgresDialect } from "@sequelize/postgres";
-import userModel from "./models/userModel";
-
-class Utils {
-  constructor() {
-    this.sequelize = new Sequelize({
-      dialect: PostgresDialect,
-      database: process.env.DB_NAME,
-      user: process.env.DB_USER,
-      password: process.env.DB_PASS,
-      host: process.env.DB_HOST,
-      ssl: true
-    });
-    
-    this.userModel = userModel.initModel(sequelize);
-    this.init();
-  }
-  
-  async init() {
-    // TODO: update into false if prod
-    this.sequelize.sync({ force: true });
-  }
-  
-  
+export function loadEnv() {
+  dotenv.config();
 }
 
-export default Utils;
+export function checkEnv() {
+  const {
+    DB_NAME,
+    DB_USER,
+    DB_PASS,
+    DB_HOST,
+    JWT_KEY
+  } = process.env;
+
+  if (
+    !DB_NAME &&
+    !DB_USER &&
+    !DB_PASS &&
+    !DB_HOST &&
+    !JWT_KEY
+  ) {
+    console.error(
+      "Environment variables are not set correctly."
+    );
+    process.exit(1);
+  }
+}

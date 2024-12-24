@@ -1,10 +1,21 @@
+/*!
+ * Copyright (c) 2024 Rui Reogo
+ * https://botforge-api.ruii.site/
+ */
+
+import * as utils from "../../utils/utils";
+utils.loadEnv();
+utils.checkEnv();
+
 import jwt from "jsonwebtoken";
-import { Database } from "../../utils/connectDB";
+import { connectDB } from "../../utils/connectDB";
 
 const SECRET_KEY = process.env.JWT_KEY;
 
 export default async function handler(req, res) {
-  if (req.method !== "POST") return res.status(405).json({ message: "Method not allowed" });
+  if (req.method !== "POST") {
+    return res.status(405).json({ message: "Method not allowed" });
+  }
 
   const { username, password } = req.body;
 
@@ -13,15 +24,17 @@ export default async function handler(req, res) {
   }
 
   try {
-    const _db = new Database();
-    const { userModel, sequelize } = await _db.init();
+    const { sequelize, UserModel } = await connectDB();
 
-    const user = await userModel.findOne({ where: { username } });
-    if (!user || !(await user.validatePassword(password))) {
+    const userExists = await UserModel.findOne({ where: { username } });
+    if (!userExists || !(await userExists.validatePassword(password))) {
       return res.status(401).json({ message: "Invalid username or password." });
     }
 
-    const token = jwt.sign({ userID: user.userID, username: user.username }, SECRET_KEY);
+    const token = jwt.sign(
+      { userID: userExists.userID, username: userExists.username },
+      SECRET_KEY
+    );
 
     res.status(200).json({ message: "Login successful", token });
   } catch (error) {
