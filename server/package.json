@@ -5,6 +5,8 @@
   "license": "MIT",
   "dependencies": {
     "@sequelize/core": "^7.0.0-alpha.43",
-    "@sequelize/postgres": "^7.0.0-alpha.43"
+    "@sequelize/postgres": "^7.0.0-alpha.43",
+    "bcryptjs": "^2.4.3",
+    "jsonwebtoken": "^9.0.2"
   }
 }
