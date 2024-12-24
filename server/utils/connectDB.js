@@ -10,6 +10,8 @@ utils.checkEnv();
 import { Sequelize } from "@sequelize/core";
 import { PostgresDialect } from "@sequelize/postgres";
 import User from "./models/User";
+import Forge from "./models/Forge";
+import ForgeMembers from "./models/ForgeMembers";
 
 async function connectDB() {
   const sequelize = new Sequelize({
@@ -24,10 +26,13 @@ async function connectDB() {
     // update if u dont have ssl
     ssl: true
   });
+
   const user = User.initModel(sequelize);
-  
+  const forge = Forge.initModel(sequelize);
+  const forgeMembers = ForgeMembers.initModel(sequelize);
+
   await sequelize.sync({ force: true });
-  return { sequelize, user };
+  return { sequelize, user, forge, forgeMembers };
 }
 
 export default { connectDB };
